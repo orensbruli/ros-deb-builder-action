@@ -63,7 +63,10 @@ for PKG_PATH in $(catkin_topological_order --only-folders); do
   (
   cd "$PKG_PATH"
 
-  bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"
+  if ! bloom-generate "${BLOOM}debian" --os-name="$DISTRIBUTION" --os-version="$DEB_DISTRO" --ros-distro="$ROS_DISTRO"; then
+    echo "- bloom-generate of $(basename $PKG_PATH)" >> /home/runner/apt_repo/Failed.md
+    exit 0
+  fi
 
   # Set the version based on the checked out tag that contain at least on digit
   # strip any leading non digits as they are not part of the version number
